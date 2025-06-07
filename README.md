@@ -6,7 +6,7 @@
 
 # Tensoe Recommender
 
-**Tensoe Recommender** is the machine learning engine behind [Tensoe](https:/github.com/connergroth/tensoe), an AI-powered music discovery platform. It blends collaborative filtering, content-based filtering, and user-centric data (from Last.fm and AlbumOfTheYear.org) to generate highly personalized, explainable music recommendations.
+**Tensoe Recommender** is the machine learning engine behind [Tensoe](https://www.github.com/connergroth/tensoe), an AI-powered music discovery platform. It blends collaborative filtering, content-based filtering, and user-centric data (from Last.fm and AlbumOfTheYear.org) to generate highly personalized, explainable music recommendations.
 
 > _"A fusion of tensor and tone, using machine learning to shape resonant sound."_
 
