@@ -2,12 +2,12 @@
   <img src="https://github.com/user-attachments/assets/41799144-166f-4f51-989f-a461f1732760" alt="Timbral" width="355"/>
 </p>
 
-# Timbral
+# Timbral - Hybrid Music Recommendation Engine
 
 **Timbral** is the machine learning engine behind [Timbre](https://github.com/connergroth/timbre), a personalized, explainable music recommendation system. It fuses collaborative filtering, BERT-based content similarity, and user interaction data to deliver smart, human-feeling suggestions — fast.
 
-> *timbral /ˈtɪm.brəl/ — adj.
-Relating to the unique character or quality of sound; in this context, where machine learning meets musical nuance.*
+> _timbral /ˈtɪm.brəl/ — adj.
+> Relating to the unique character or quality of sound; in this context, where machine learning meets musical nuance._
 
 ---
 
@@ -15,11 +15,11 @@ Relating to the unique character or quality of sound; in this context, where mac
 
 This repository contains all ML logic powering Timbral, including:
 
-* User-track interaction modeling
-* Track metadata embedding and indexing
-* Score fusion and reranking
-* Redis-based recommendation serving
-* Optional GPT agent hooks for explainability and feedback
+- User-track interaction modeling
+- Track metadata embedding and indexing
+- Score fusion and reranking
+- Redis-based recommendation serving
+- Optional GPT agent hooks for explainability and feedback
 
 ---
 
@@ -27,21 +27,21 @@ This repository contains all ML logic powering Timbral, including:
 
 ### 🔸 Collaborative Filtering (CF)
 
-* Built from play counts and listening behavior
-* Uses Non-negative Matrix Factorization (NMF)
-* Predicts latent user-track affinities
+- Built from play counts and listening behavior
+- Uses Non-negative Matrix Factorization (NMF)
+- Predicts latent user-track affinities
 
 ### 🔹 Content-Based Filtering (CBF)
 
-* Embeds mood, genre, and tags using Sentence-BERT
-* Computes track similarity with cosine distance
-* Useful for cold-starts and fallback recs
+- Embeds mood, genre, and tags using Sentence-BERT
+- Computes track similarity with cosine distance
+- Useful for cold-starts and fallback recs
 
 ### 🔶 Hybrid Fusion
 
-* Weighted blending of CF + CBF scores
-* Tunable or learnable fusion logic
-* Produces rich, explainable recs per user or seed
+- Weighted blending of CF + CBF scores
+- Tunable or learnable fusion logic
+- Produces rich, explainable recs per user or seed
 
 ---
 
@@ -109,16 +109,16 @@ python timbral/logic/train_nmf.py
 
 This will:
 
-* Build the user-item interaction matrix
-* Train the NMF model
-* Save user and track vectors to disk
+- Build the user-item interaction matrix
+- Train the NMF model
+- Save user and track vectors to disk
 
 ```bash
 python timbral/logic/build_embeddings.py
 ```
 
-* Generates Sentence-BERT embeddings from metadata
-* Saves cosine similarity matrix
+- Generates Sentence-BERT embeddings from metadata
+- Saves cosine similarity matrix
 
 ---
 
@@ -144,8 +144,8 @@ get_seed_recommendations(seed_track_id="spotify:abc123")
 python scripts/precompute_recs.py
 ```
 
-* Computes top-K per user
-* Caches to Redis or Supabase for fast serving
+- Computes top-K per user
+- Caches to Redis or Supabase for fast serving
 
 ---
 
@@ -157,19 +157,19 @@ python timbral/models/evaluation.py
 
 Includes:
 
-* Precision\@k
-* Recall\@k
-* nDCG
+- Precision\@k
+- Recall\@k
+- nDCG
 
 ---
 
 ## 🏗️ Roadmap
 
-* 🎵 Audio preview + tag embeddings
-* 🧠 GPT-powered agent feedback loop
-* 💬 Natural language explainability
-* 🌟 LightGBM final reranker
-* 📜 A/B testing engine
+- 🎵 Audio preview + tag embeddings
+- 🧠 GPT-powered agent feedback loop
+- 💬 Natural language explainability
+- 🌟 LightGBM final reranker
+- 📜 A/B testing engine
 
 ---
 
