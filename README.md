@@ -1,69 +1,72 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/522ad4ce-2b4a-41e4-989d-6a28f325dbf3" alt="Tensoe-Recommender" width="355"/>
+  <img src="https://github.com/user-attachments/assets/41799144-166f-4f51-989f-a461f1732760" alt="Timbral" width="355"/>
 </p>
 
+# Timbral
 
+**Timbral** is the machine learning engine behind [Timbre](https://github.com/connergroth/timbre), a personalized, explainable music recommendation system. It fuses collaborative filtering, BERT-based content similarity, and user interaction data to deliver smart, human-feeling suggestions — fast.
 
-# Tensoe Recommender
-
-**Tensoe Recommender** is the machine learning engine behind [Tensoe](https://www.github.com/connergroth/tensoe), an AI-powered music discovery platform. It blends collaborative filtering, content-based filtering, and user-centric data (from Last.fm and AlbumOfTheYear.org) to generate highly personalized, explainable music recommendations.
-
-> _"A fusion of tensor and tone, using machine learning to shape resonant sound."_
+> *timbral /ˈtɪm.brəl/ — adj.
+Relating to the unique character or quality of sound; in this context, where machine learning meets musical nuance.*
 
 ---
 
 ## 🤖 Overview
 
-This repository contains all ML-related logic, including:
-- Data preprocessing pipelines
-- Feature extraction
-- Embedding generation
-- Hybrid recommendation model (PyTorch)
-- Inference API stubs
-- Batch recommendation jobs
+This repository contains all ML logic powering Timbral, including:
+
+* User-track interaction modeling
+* Track metadata embedding and indexing
+* Score fusion and reranking
+* Redis-based recommendation serving
+* Optional GPT agent hooks for explainability and feedback
 
 ---
 
 ## 🧠 Model Design
 
 ### 🔸 Collaborative Filtering (CF)
-- Based on implicit user-track interactions
-- Matrix Factorization (e.g., NMF or ALS)
+
+* Built from play counts and listening behavior
+* Uses Non-negative Matrix Factorization (NMF)
+* Predicts latent user-track affinities
 
 ### 🔹 Content-Based Filtering (CBF)
-- TF-IDF on tags/moods/genres
-- Genre and mood embeddings (Last.fm, AOTY)
-- Cosine similarity for related tracks
+
+* Embeds mood, genre, and tags using Sentence-BERT
+* Computes track similarity with cosine distance
+* Useful for cold-starts and fallback recs
 
 ### 🔶 Hybrid Fusion
-- Combines CF and CBF scores
-- Supports tunable weights
-- Outputs enriched recommendations with reasoning metadata
+
+* Weighted blending of CF + CBF scores
+* Tunable or learnable fusion logic
+* Produces rich, explainable recs per user or seed
 
 ---
 
 ## 📂 Project Structure
 
 ```bash
-tensoe-recommender/
+timbral-recommender/
 ├── data/
-│   ├── user_track_matrix.csv
-│   ├── track_features.json
-│   ├── track_embeddings.pt
-│   └── similarity_matrix.npz
-├── model/
-│   ├── train.py
-│   ├── hybrid.py
-│   ├── content_based.py
-│   ├── collaborative.py
-│   └── evaluation.py
-├── pipeline/
-│   ├── build_matrix.py
-│   ├── extract_features.py
-│   └── normalize_sources.py
-├── infer.py
-├── batch_precompute.py
+│   ├── bronze/                # raw interaction & metadata
+│   ├── silver/                # cleaned matrices and embeddings
+│   └── gold/                  # final user-track matrix, similarity cache
+├── timbral/
+│   ├── models/                # nmf.py, content_encoder.py, fusion.py
+│   ├── api/                   # recommend.py (FastAPI endpoints)
+│   ├── core/                  # ranking.py, explain.py, scoring.py
+│   ├── logic/                 # train_nmf.py, build_embeddings.py
+│   ├── utils/                 # redis_client.py, metrics.py
+│   └── config/                # config.yaml, constants
+├── scripts/
+│   ├── precompute_recs.py
+│   └── populate_redis.py
+├── notebooks/
+│   └── evaluation.ipynb
 ├── requirements.txt
+├── .env.example
 └── README.md
 ```
 
@@ -71,11 +74,11 @@ tensoe-recommender/
 
 ## ⚙️ Setup
 
-### 1. Clone the Repository
+### 1. Clone the Repo
 
 ```bash
-git clone https://github.com/yourname/tensoe-recommender.git
-cd tensoe-recommender
+git clone https://github.com/connergroth/timbral-recommender.git
+cd timbral-recommender
 ```
 
 ### 2. Install Dependencies
@@ -98,70 +101,80 @@ SUPABASE_KEY=your-supabase-api-key
 
 ---
 
-## 📊 Training
+## 💻 Training
 
 ```bash
-python model/train.py
+python timbral/logic/train_nmf.py
 ```
 
 This will:
-- Build the user-item matrix
-- Train CF/CBF models
-- Merge outputs
-- Save `track_embeddings.pt` and `recommendation_cache.json`
+
+* Build the user-item interaction matrix
+* Train the NMF model
+* Save user and track vectors to disk
+
+```bash
+python timbral/logic/build_embeddings.py
+```
+
+* Generates Sentence-BERT embeddings from metadata
+* Saves cosine similarity matrix
 
 ---
 
 ## 🔍 Inference
 
-Use `infer.py`:
-
 ```python
-from infer import get_user_recommendations
+from timbral.api.recommend import get_recommendations
 
-recs = get_user_recommendations(user_id="123", top_k=20)
+recs = get_recommendations(user_id="123", top_k=20)
 ```
 
-Guest (seed-based):
+For guests (seeded by track):
+
 ```python
-get_guest_recommendations(seed_track_id="spotify:abc123")
+get_seed_recommendations(seed_track_id="spotify:abc123")
 ```
 
 ---
 
-## 📦 Batch Precomputation
+## ✖️ Batch Precomputation
 
 ```bash
-python batch_precompute.py
+python scripts/precompute_recs.py
 ```
 
-- Generates top-K recs per user
-- Stores to Redis or Supabase
+* Computes top-K per user
+* Caches to Redis or Supabase for fast serving
 
 ---
 
 ## 📊 Evaluation
 
 ```bash
-python model/evaluation.py
+python timbral/models/evaluation.py
 ```
 
-Supports:
-- Precision@k
-- Recall@k
-- Offline NDCG
+Includes:
+
+* Precision\@k
+* Recall\@k
+* nDCG
 
 ---
 
-## 🚀 Roadmap
+## 🏗️ Roadmap
 
-- 🎙️ Audio/Lyric Embeddings
-- 📈 User feedback loop integration
-- 👩‍🔬 Personalized fine-tuning
-- 🧠 GPT-powered explainability
+* 🎵 Audio preview + tag embeddings
+* 🧠 GPT-powered agent feedback loop
+* 💬 Natural language explainability
+* 🌟 LightGBM final reranker
+* 📜 A/B testing engine
+
+---
 
 ## 📰 Credits
 
-Built by [Conner Groth](https://www.connergroth.com) for the Tensoe ecosystem.
+Built by [Conner Groth](https://www.connergroth.com) for the Timbral ML system.
 
-Model powered by real-world music intelligence from Spotify, Last.fm, and albumoftheyear.org.
+Powered by real-world music intelligence from Spotify, Last.fm, and AlbumOfTheYear.org.
